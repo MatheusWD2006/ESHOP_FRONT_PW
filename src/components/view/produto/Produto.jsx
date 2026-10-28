@@ -13,6 +13,7 @@ import {
 import Tabela from './Tabela';
 import Formulario from './Formulario';
 import Carregando from '../../common/Carregando';
+import WithAuth from "../../../security/WithAuth";
 
 function Produto() {
 
@@ -171,4 +172,4 @@ function Produto() {
     );
 }
 
-export default Produto;
+export default WithAuth(Produto);

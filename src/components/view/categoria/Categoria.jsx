@@ -9,25 +9,42 @@ import {
 import Tabela from "./Tabela";
 import Formulario from "./Formulario";
 import Carregando from "../../common/Carregando";
+import { useNavigate } from "react-router-dom";
 
 function Categoria() {
+  let navigate = useNavigate();
   const [alerta, setAlerta] = useState({ status: "", message: "" });
   const [listaObjetos, setListaObjetos] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
   const recuperaCategorias = async () => {
-    setCarregando(true);
+    try {
+      setCarregando(true);
 
-    setListaObjetos(await getCategoriasAPI());
+      setListaObjetos(await getCategoriasAPI());
 
-    setCarregando(false);
+      setCarregando(false);
+    } catch (err) {
+      // Redireciona para a tela de login em caso de erro
+      navigate("/login", { replace: true });
+    }
   };
 
   const remover = async (codigo) => {
     if (window.confirm("Deseja remover este objeto?")) {
-      let retornoAPI = await deleteCategoriaPorCodigoAPI(codigo);
-      setAlerta({ status: retornoAPI.status, message: retornoAPI.message });
-      recuperaCategorias();
+      try {
+        let retornoAPI = await deleteCategoriaPorCodigoAPI(codigo);
+
+        setAlerta({
+          status: retornoAPI.status,
+          message: retornoAPI.message,
+        });
+
+        recuperaCategorias();
+      } catch (err) {
+        // Redireciona para a tela de login em caso de erro
+        navigate("/login", { replace: true });
+      }
     }
   };
 
@@ -57,14 +74,23 @@ function Categoria() {
   };
 
   const editarObjeto = async (codigo) => {
-    setObjeto(await getCategoriaPorCodigoAPI(codigo));
-    setEditar(true);
-    setAlerta({ status: "", message: "" });
-    setExibirForm(true);
+    try {
+      setObjeto(await getCategoriaPorCodigoAPI(codigo));
+      setEditar(true);
+      setAlerta({
+        status: "",
+        message: "",
+      });
+      setExibirForm(true);
+    } catch (err) {
+      // Redireciona para a tela de login em caso de erro
+      navigate("/login", { replace: true });
+    }
   };
 
   const acaoCadastrar = async (e) => {
     e.preventDefault();
+
     const metodo = editar ? "PUT" : "POST";
 
     try {
@@ -81,22 +107,14 @@ function Categoria() {
         setEditar(true);
       }
     } catch (err) {
-      console.error(err.message);
+      console.log("Erro: " + err);
+
+      // Redireciona para a tela de login em caso de erro
+      navigate("/login", { replace: true });
     }
 
     recuperaCategorias();
   };
-
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setObjeto({
-      ...objeto,
-      [name]: value,
-    });
-  };
-
   // Adicionando no value do Provider os novos estados e métodos
   // para uso dos componentes filhos
   return (

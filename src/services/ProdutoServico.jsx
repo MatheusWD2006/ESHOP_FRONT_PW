@@ -1,27 +1,30 @@
-const API_URL = process.env.REACT_APP_ENDERECO_API;
+import { getToken } from '../security/Autenticacao';
+
 export const getProdutosAPI = async () => {
     const response = await fetch(
-        `${API_URL}/produto`,
+        `${process.env.REACT_APP_ENDERECO_API}/produto`,
         {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "authorization": getToken()
             }
         }
-    )
+    );
 
-    const data = await response.json()
+    const data = await response.json();
 
     return data;
-}
+};
 
 export const getProdutoPorCodigoAPI = async codigo => {
     const response = await fetch(
-        `${API_URL}/produto/${codigo}`,
+        `${process.env.REACT_APP_ENDERECO_API}/produto/${codigo}`,
         {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "authorization": getToken()
             }
         }
     );
@@ -29,15 +32,16 @@ export const getProdutoPorCodigoAPI = async codigo => {
     const data = await response.json();
 
     return data;
-}
+};
 
 export const deleteProdutoPorCodigoAPI = async codigo => {
     const response = await fetch(
-        `${API_URL}/produto/${codigo}`,
+        `${process.env.REACT_APP_ENDERECO_API}/produto/${codigo}`,
         {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "authorization": getToken()
             }
         }
     );
@@ -45,21 +49,22 @@ export const deleteProdutoPorCodigoAPI = async codigo => {
     const data = await response.json();
 
     return data;
-}
+};
 
 export const cadastraProdutoAPI = async (objeto, metodo) => {
     const response = await fetch(
-        `${API_URL}/produto`,
+        `${process.env.REACT_APP_ENDERECO_API}/produto/`,
         {
             method: metodo,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "authorization": getToken()
             },
-            body: JSON.stringify(objeto),
+            body: JSON.stringify(objeto)
         }
-    )
+    );
 
     const data = await response.json();
 
     return data;
-}
+};
