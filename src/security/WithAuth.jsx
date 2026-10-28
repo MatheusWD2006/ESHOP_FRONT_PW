@@ -4,13 +4,15 @@ import { getToken } from "./Autenticacao";
 const WithAuth = (Component) => {
 
     const AuthRoute = () => {
-        const isAuth = getToken() ? true : false;
+        let isAuth = false;
 
-        if (isAuth) {
-            return <Component />;
-        } else {
-            return <Navigate to="/login" />;
+        try {
+            isAuth = Boolean(getToken());
+        } catch (err) {
+            console.error("Erro ao validar autenticação:", err);
         }
+
+        return isAuth ? <Component /> : <Navigate to="/login" replace />;
     };
 
     return AuthRoute;

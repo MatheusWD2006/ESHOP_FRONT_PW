@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CategoriaContext from "./CategoriaContext";
 import {
   getCategoriasAPI,
@@ -10,6 +10,7 @@ import Tabela from "./Tabela";
 import Formulario from "./Formulario";
 import Carregando from "../../common/Carregando";
 import { useNavigate } from "react-router-dom";
+import WithAuth from "../../../security/WithAuth";
 
 function Categoria() {
   let navigate = useNavigate();
@@ -17,18 +18,17 @@ function Categoria() {
   const [listaObjetos, setListaObjetos] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
-  const recuperaCategorias = async () => {
+  const recuperaCategorias = useCallback(async () => {
     try {
       setCarregando(true);
 
       setListaObjetos(await getCategoriasAPI());
-
-      setCarregando(false);
     } catch (err) {
-      // Redireciona para a tela de login em caso de erro
       navigate("/login", { replace: true });
+    } finally {
+      setCarregando(false);
     }
-  };
+  }, [navigate]);
 
   const remover = async (codigo) => {
     if (window.confirm("Deseja remover este objeto?")) {
@@ -42,7 +42,6 @@ function Categoria() {
 
         recuperaCategorias();
       } catch (err) {
-        // Redireciona para a tela de login em caso de erro
         navigate("/login", { replace: true });
       }
     }
@@ -50,17 +49,15 @@ function Categoria() {
 
   useEffect(() => {
     recuperaCategorias();
-  }, []);
+  }, [recuperaCategorias]);
 
   // Novos estados e métodos
   const [editar, setEditar] = useState(false);
   const [exibirForm, setExibirForm] = useState(false);
 
   const [objeto, setObjeto] = useState({
-    codigo: "",
+    codigo: 0,
     nome: "",
-    descricao: "",
-    sigla: "",
   });
 
   const novoObjeto = () => {
@@ -83,7 +80,6 @@ function Categoria() {
       });
       setExibirForm(true);
     } catch (err) {
-      // Redireciona para a tela de login em caso de erro
       navigate("/login", { replace: true });
     }
   };
@@ -107,16 +103,20 @@ function Categoria() {
         setEditar(true);
       }
     } catch (err) {
-      console.log("Erro: " + err);
-
-      // Redireciona para a tela de login em caso de erro
       navigate("/login", { replace: true });
+      return;
     }
 
-    recuperaCategorias();
+    await recuperaCategorias();
   };
-  // Adicionando no value do Provider os novos estados e métodos
-  // para uso dos componentes filhos
+
+  const handleChange = (e) => {
+    setObjeto({
+      ...objeto,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
     <CategoriaContext.Provider
       value={{
@@ -140,4 +140,4 @@ function Categoria() {
   );
 }
 
-export default Categoria;
+export default WithAuth(Categoria);

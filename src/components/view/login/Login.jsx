@@ -4,11 +4,11 @@ import { Navigate } from 'react-router-dom';
 import {
     gravaAutenticacao,
     getToken
-} from '../../../seguranca/Autenticacao';
+} from '../../../security/Autenticacao';
 
-import Carregando from '../../comuns/Carregando';
-import Alerta from '../../comuns/Alerta';
-import CampoEntrada from '../../comuns/CampoEntrada';
+import Carregando from '../../common/Carregando';
+import Alerta from '../../common/Alerta';
+import CampoEntrada from '../../common/CampoEntrada';
 
 function Login() {
 

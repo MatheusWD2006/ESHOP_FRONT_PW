@@ -8,8 +8,8 @@ import {
     RouterProvider
 } from 'react-router-dom';
 
-import Home from './componentes/view/Home';
-import Sobre from './componentes/view/Sobre';
+import Home from './components/view/Home';
+import Sobre from './components/view/Sobre';
 
 import Categoria from './components/view/categoria/Categoria';
 import Produto from './components/view/produto/Produto';
